@@ -108,7 +108,7 @@ int main()
                     MySendBasicTrajectory(pointToSend);
 
 
-/*
+
 
                     CartesianInfo commandMin;
                     CartesianInfo commandMax;
@@ -130,8 +130,6 @@ int main()
                     commandMax.ThetaZ = 2.0f;
                     result = (*MySetCartesianForceMinMax)(commandMin, commandMax);
                     cout << "Cartesian force min and max has been set: " << result << endl;
-*/
-
                     /*
                     CartesianInfo Inertia;
                     CartesianInfo Damping;
@@ -170,9 +168,9 @@ int main()
                     Inertia.Actuator1 = 0.001f;
                     Inertia.Actuator2 = 0.001f;
                     Inertia.Actuator3 = 0.001f;
-                    Inertia.Actuator4 = 0.050f;
-                    Inertia.Actuator5 = 0.050f;
-                    Inertia.Actuator6 = 0.050f;
+                    Inertia.Actuator4 = 0.005f; //0.050f;
+                    Inertia.Actuator5 = 0.005f; //0.050f;
+                    Inertia.Actuator6 = 0.005f; //0.050f;
 
                     Damping.Actuator1 = 0.01f;
                     Damping.Actuator2 = 0.01f;
