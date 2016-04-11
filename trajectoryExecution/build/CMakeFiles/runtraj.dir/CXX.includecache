@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/reza/projects/LfD-with-Jaco2/trajectoryExecution/main.cpp
+iostream
+-
+dlfcn.h
+-
+KinovaTypes.h
+-
+Kinova.API.CommLayerUbuntu.h
+-
+stdio.h
+-
+fstream
+-
+termios.h
+-
+unistd.h
+-
+vector
+-
+fcntl.h
+-
+string
+-
+sstream
+-
+
+/opt/kinova/API/Kinova.API.CommLayerUbuntu.h
+vector
+-
+
+/opt/kinova/API/KinovaTypes.h
+

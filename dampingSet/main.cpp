@@ -165,15 +165,15 @@ int main()
                     Damping.InitStruct();
 
 
-                    Inertia.Actuator1 = 0.001f;
-                    Inertia.Actuator2 = 0.001f;
-                    Inertia.Actuator3 = 0.001f;
+                    Inertia.Actuator1 = 0.006f;
+                    Inertia.Actuator2 = 0.006f;
+                    Inertia.Actuator3 = 0.005f;
                     Inertia.Actuator4 = 0.005f; //0.050f;
                     Inertia.Actuator5 = 0.005f; //0.050f;
                     Inertia.Actuator6 = 0.005f; //0.050f;
 
-                    Damping.Actuator1 = 0.01f;
-                    Damping.Actuator2 = 0.01f;
+                    Damping.Actuator1 = 0.015f;
+                    Damping.Actuator2 = 0.015f;
                     Damping.Actuator3 = 0.01f;
                     Damping.Actuator4 = 0.01f;
                     Damping.Actuator5 = 0.01f;

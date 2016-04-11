@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/runtraj.dir/main.cpp.o  -o runtraj -rdynamic -ldl 
