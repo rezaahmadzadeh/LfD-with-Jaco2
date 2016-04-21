@@ -46,6 +46,7 @@ int main()
         int (*MyMoveHome)();
         int (*MyGetCartesianCommand)(CartesianPosition &);
         int (*MyGetCartesianPosition)(CartesianPosition &);
+        int (*MySendAdvanceTrajectory)(TrajectoryPoint command);
 
         //We load the library (Under Windows, use the function LoadLibrary)
         commandLayer_handle = dlopen("Kinova.API.USBCommandLayerUbuntu.so",RTLD_NOW|RTLD_GLOBAL);
@@ -57,12 +58,13 @@ int main()
         MyGetCartesianCommand = (int (*)(CartesianPosition &)) dlsym(commandLayer_handle,"GetCartesianCommand");
         MyGetCartesianPosition = (int (*)(CartesianPosition &)) dlsym(commandLayer_handle,"GetCartesianPosition");
         MyMoveHome = (int (*)()) dlsym(commandLayer_handle,"MoveHome");
+        MySendAdvanceTrajectory = (int(*)(TrajectoryPoint)) dlsym(commandLayer_handle,"SendAdvanceTrajectory");
 
         singlePointTest = false;
         incrementalTest = false;
         //If the was loaded correctly
         if((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MySendBasicTrajectory == NULL) || (MyStartControlAPI == NULL) || 
-        (MyMoveHome == NULL) || (MyGetCartesianCommand == NULL) || (MyGetCartesianPosition == NULL))
+        (MyMoveHome == NULL) || (MyGetCartesianCommand == NULL) || (MyGetCartesianPosition == NULL) || (MySendAdvanceTrajectory == NULL))
         {
                 cout << "Unable to initialize the command layer." << endl;
         }
@@ -75,6 +77,8 @@ int main()
                 cout << " Home: [ " << data.Coordinates.X << "," << data.Coordinates.Y << "," << data.Coordinates.Z << " ]" << endl;
                 usleep(3000);
                 TrajectoryPoint trajectoryPoint;
+
+                /*
                 if (singlePointTest)
                 {
                 //We prepare the virtual joystick command that will be sent to the robotic arm.
@@ -160,6 +164,8 @@ int main()
                 }
                 }
 
+                */
+
                 //getchar();
                 //ifstream inputFile ("traj2.txt");
 
@@ -170,10 +176,48 @@ int main()
                 ifstream ifs;
                 ifs.open(fileName.c_str());
                 if (!ifs.is_open())
+                {
                     cout << "no such file! try again." << endl;
+                    result = (*MyCloseAPI)();
+                    return 0;
+                }
                 int count;
                 float j1,j2,j3,j4,j5,j6,x,y,z,tx,ty,tz;
 
+                // get the first point from the trajectory
+                ifs >> count >> j1 >> j2 >> j3 >> j4 >> j5 >> j6 >> x >> y >> z >> tx >> ty >> tz;
+                printf("Desired Pose: [%f\t%f\t%f\t%f\t%f\t%f]\n", x,y,z,tx,ty,tz);
+
+                std::string answer;
+                std::string yes = "y"; //.c_str();
+
+                cout << "The robot will move to the first pose of the given trajectory file. Agree?";
+                getline(cin, answer);
+                if (answer.compare(yes) == 0 )
+                {
+                    trajectoryPoint.InitStruct();
+                    trajectoryPoint.Position.Type = CARTESIAN_POSITION;
+                    trajectoryPoint.Position.CartesianPosition.X = x;
+                    trajectoryPoint.Position.CartesianPosition.Y = y;
+                    trajectoryPoint.Position.CartesianPosition.Z = z;
+                    trajectoryPoint.Position.CartesianPosition.ThetaX = tx;
+                    trajectoryPoint.Position.CartesianPosition.ThetaY = ty;
+                    trajectoryPoint.Position.CartesianPosition.ThetaZ = tz;
+                    (*MySendBasicTrajectory)(trajectoryPoint);
+                    usleep(3000);
+                }
+                else
+                {
+                    ifs.close();
+                    result = (*MyCloseAPI)();
+                    return 0;
+                }
+
+
+
+
+                // send the robot to the first point
+                /*
                 while (ifs.is_open() &&  ifs >> count >> j1 >> j2 >> j3 >> j4 >> j5 >> j6 >> x >> y >> z >> tx >> ty >> tz)
                 {
                   // printf("%i\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", count,j1,j2,j3,j4,j5,j6,x,y,z,tx,ty,tz);
@@ -192,6 +236,51 @@ int main()
                 }
 
                 ifs.close();
+                */
+
+                cout << "Start executing the trajectory?";
+                getline(cin, answer);
+                if (answer.compare(yes) == 0 )
+                {
+
+                    trajectoryPoint.InitStruct();
+                    trajectoryPoint.Limitations.accelerationParameter1 = 0.0f;
+                    trajectoryPoint.Limitations.accelerationParameter2 = 0.0f;
+                    trajectoryPoint.Limitations.accelerationParameter3 = 0.0f;
+                    trajectoryPoint.Limitations.forceParameter1 = 0.0f;
+                    trajectoryPoint.Limitations.forceParameter2 = 0.0f;
+                    trajectoryPoint.Limitations.forceParameter3 = 0.0f;
+                    trajectoryPoint.Limitations.speedParameter1 = 0.1f; // limit the translational velocity to 8cm/s
+                    trajectoryPoint.Limitations.speedParameter2 = 0.6f; // limit the rotational velocity to 6 RAD/s
+                    trajectoryPoint.Limitations.speedParameter3 = 0.1f; // limit the translational velocity to 8cm/s
+                    trajectoryPoint.LimitationsActive = 1;
+                    trajectoryPoint.Position.Type = CARTESIAN_POSITION;
+                    trajectoryPoint.Position.Actuators.Actuator1 = 0.0f;
+                    trajectoryPoint.Position.Actuators.Actuator2 = 0.0f;
+                    trajectoryPoint.Position.Actuators.Actuator3 = 0.0f;
+                    trajectoryPoint.Position.Actuators.Actuator4 = 0.0f;
+                    trajectoryPoint.Position.Actuators.Actuator5 = 0.0f;
+                    trajectoryPoint.Position.Actuators.Actuator6 = 0.0f;
+                    trajectoryPoint.Position.Delay = 0.0f;
+                    trajectoryPoint.Position.HandMode = POSITION_MODE;
+
+                    while (ifs.is_open() &&  ifs >> count >> j1 >> j2 >> j3 >> j4 >> j5 >> j6 >> x >> y >> z >> tx >> ty >> tz)
+                    {
+                        trajectoryPoint.Position.CartesianPosition.X = x;
+                        trajectoryPoint.Position.CartesianPosition.Y = y;
+                        trajectoryPoint.Position.CartesianPosition.Z = z;
+                        trajectoryPoint.Position.CartesianPosition.ThetaX = tx;
+                        trajectoryPoint.Position.CartesianPosition.ThetaY = ty;
+                        trajectoryPoint.Position.CartesianPosition.ThetaZ = tz;
+                        (*MySendAdvanceTrajectory)(trajectoryPoint);
+                    }
+                    ifs.close();
+                }
+                else
+                {
+                    cout << "aborted.";
+                }
+
                 result = (*MyCloseAPI)();
 
         }
