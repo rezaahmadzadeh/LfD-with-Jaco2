@@ -120,10 +120,10 @@ int main(int argc, char *argv[])
         int devicesCount = MyGetDevices(list, result);
         if (devicesCount == 0)
         {
-            cout << "\n WARNING : The robot is off or in not in the loop!" << endl;
+            cout << "\n WARNING : The robot is off or is not in the loop!" << endl;
             return 0;
         }
-        cout << devicesCount << endl;
+        // cout << devicesCount << endl;
 
         for(int i = 0; i < devicesCount; i++)
         {

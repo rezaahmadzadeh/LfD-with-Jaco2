@@ -47,7 +47,9 @@ int main(int argc, char *argv[])
     cout << "===================================================" << endl;
     cout << "===== A Demonstration Recorder for Jaco2 arm  =====" << endl;
     cout << "===================================================" << endl;
-    cout << "code: Reza Ahmadzadeh (IRIM, 2016)." << endl << endl;
+    cout << "code: Reza Ahmadzadeh (IRIM, 2016)." << endl;
+    cout << "structure: i j1 j2 j3 j4 j5 j6 x y z thetax thetay thetaz" << endl;
+    cout << "{Position, Angle} : {mm, deg}" << endl << endl;
     if ( argc != 2 ) {// argc should be 2 for correct execution
         // We print argv[0] assuming it is the program name
         cout << "Usage: "<< argv[0] <<" <filename>" << endl;
@@ -61,7 +63,7 @@ int main(int argc, char *argv[])
 
 
     int result;
-    AngularPosition dataCommand;
+    //AngularPosition dataCommand;
     AngularPosition dataPosition;
     CartesianPosition cartPosition;
 
@@ -71,7 +73,7 @@ int main(int argc, char *argv[])
     //Function pointers to the functions we need
     int (*MyInitAPI)();
     int (*MyCloseAPI)();
-    int (*MyGetAngularCommand)(AngularPosition &);
+    //int (*MyGetAngularCommand)(AngularPosition &);
     int (*MyGetAngularPosition)(AngularPosition &);
     int (*MyGetCartesianPosition)(CartesianPosition &);
     int (*MyGetDevices)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &result);
@@ -83,21 +85,21 @@ int main(int argc, char *argv[])
     //We load the functions from the library (Under Windows, use GetProcAddress)
     MyInitAPI = (int (*)()) dlsym(commandLayer_handle,"InitAPI");
     MyCloseAPI = (int (*)()) dlsym(commandLayer_handle,"CloseAPI");
-    MyGetAngularCommand = (int (*)(AngularPosition &)) dlsym(commandLayer_handle,"GetAngularCommand");
+    //MyGetAngularCommand = (int (*)(AngularPosition &)) dlsym(commandLayer_handle,"GetAngularCommand");
     MyGetAngularPosition = (int (*)(AngularPosition &)) dlsym(commandLayer_handle,"GetAngularPosition");
     MyGetCartesianPosition = (int (*) (CartesianPosition &)) dlsym(commandLayer_handle,"GetCartesianPosition");
     MyGetDevices = (int (*)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &result)) dlsym(commandLayer_handle,"GetDevices");
     MySetActiveDevice = (int (*)(KinovaDevice devices)) dlsym(commandLayer_handle,"SetActiveDevice");
 
     //If the was loaded correctly
-    if((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MyGetAngularCommand == NULL) || (MyGetAngularPosition == NULL)
+    if((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MyGetCartesianPosition == NULL) || (MyGetAngularPosition == NULL)
        || (MySetActiveDevice == NULL) || (MyGetDevices == NULL))
     {
-        cout << "* * *  E R R O R   D U R I N G   I N I T I A L I Z A T I O N  * * *" << endl;
+        cout << "* * *  ERROR: initialization failed!  * * *" << endl;
     }
     else
     {
-        cout << "I N I T I A L I Z A T I O N   C O M P L E T E D" << endl << endl;
+        cout << "Initialization Completed." << endl << endl;
 
         result = (*MyInitAPI)();
 
@@ -107,12 +109,16 @@ int main(int argc, char *argv[])
         cout << "an empty file has been created to record the trajectory" << endl;
 
 
-
         cout << "Initialization's result :" << result << endl;
 
         KinovaDevice list[MAX_KINOVA_DEVICE];
 
         int devicesCount = MyGetDevices(list, result);
+        if (devicesCount == 0)
+        {
+            cout << "\n WARNING: The robot is off or is not in the loop!" << endl;
+            return 0;
+        }
 
         for(int i = 0; i < devicesCount; i++)
         {
@@ -128,30 +134,21 @@ int main(int argc, char *argv[])
                 (*MyGetAngularPosition)(dataPosition);
                 (*MyGetCartesianPosition)(cartPosition);
 
-
-                outfile << pointCounter << "  " << dataPosition.Actuators.Actuator1 << "  " << dataPosition.Actuators.Actuator2 << "  " << dataPosition.Actuators.Actuator3 << "  " << dataPosition.Actuators.Actuator4 << "  " << dataPosition.Actuators.Actuator5 << "  " << dataPosition.Actuators.Actuator6 << "  " << cartPosition.Coordinates.X << "  " << cartPosition.Coordinates.Y << "  " << cartPosition.Coordinates.Z << "  " << cartPosition.Coordinates.ThetaX << "  " << cartPosition.Coordinates.ThetaY << "  " << cartPosition.Coordinates.ThetaZ << endl;
-                cout << pointCounter << "  " << dataPosition.Actuators.Actuator1 << "  " << dataPosition.Actuators.Actuator2 << "  " << dataPosition.Actuators.Actuator3 << "  " << dataPosition.Actuators.Actuator4 << "  " << dataPosition.Actuators.Actuator5 << "  " << dataPosition.Actuators.Actuator6 << "  " << cartPosition.Coordinates.X << "  " << cartPosition.Coordinates.Y << "  " << cartPosition.Coordinates.Z << "  " << cartPosition.Coordinates.ThetaX << "  " << cartPosition.Coordinates.ThetaY << "  " << cartPosition.Coordinates.ThetaZ << endl;
+                outfile << pointCounter << "  " << dataPosition.Actuators.Actuator1 << "  " << dataPosition.Actuators.Actuator2 << "  " << dataPosition.Actuators.Actuator3 << "  "
+                        << dataPosition.Actuators.Actuator4 << "  " << dataPosition.Actuators.Actuator5 << "  " << dataPosition.Actuators.Actuator6 << "  "
+                        << cartPosition.Coordinates.X << "  " << cartPosition.Coordinates.Y << "  " << cartPosition.Coordinates.Z << "  "
+                        << cartPosition.Coordinates.ThetaX << "  " << cartPosition.Coordinates.ThetaY << "  " << cartPosition.Coordinates.ThetaZ << endl;
+                cout << pointCounter << "  " << dataPosition.Actuators.Actuator1 << "  " << dataPosition.Actuators.Actuator2 << "  " << dataPosition.Actuators.Actuator3 << "  "
+                     << dataPosition.Actuators.Actuator4 << "  " << dataPosition.Actuators.Actuator5 << "  " << dataPosition.Actuators.Actuator6 << "  "
+                     << cartPosition.Coordinates.X << "  " << cartPosition.Coordinates.Y << "  " << cartPosition.Coordinates.Z << "  "
+                     << cartPosition.Coordinates.ThetaX << "  " << cartPosition.Coordinates.ThetaY << "  " << cartPosition.Coordinates.ThetaZ << endl;
                 pointCounter++;
-                /*
-                cout << "*********************************" << endl;
-                cout << "Actuator 1   command : " << dataCommand.Actuators.Actuator1 << "°" << "     Position : " << dataPosition.Actuators.Actuator1 <<  endl;
-                cout << "Actuator 2   command : " << dataCommand.Actuators.Actuator2 << "°" << "     Position : " << dataPosition.Actuators.Actuator2 <<  endl;
-                cout << "Actuator 3   command : " << dataCommand.Actuators.Actuator3 << "°" << "     Position : " << dataPosition.Actuators.Actuator3 <<  endl;
-                cout << "Actuator 4   command : " << dataCommand.Actuators.Actuator4 << "°" << "     Position : " << dataPosition.Actuators.Actuator4 <<  endl;
-                cout << "Actuator 5   command : " << dataCommand.Actuators.Actuator5 << "°" << "     Position : " << dataPosition.Actuators.Actuator5 <<  endl;
-                cout << "Actuator 6   command : " << dataCommand.Actuators.Actuator6 << "°" << "     Position : " << dataPosition.Actuators.Actuator6 <<  endl << endl;
-
-                cout << "  Finger 1   command: " << dataCommand.Fingers.Finger1 << "     Position : " << dataPosition.Fingers.Finger1 <<  endl;
-                cout << "  Finger 2   command: " << dataCommand.Fingers.Finger2 << "     Position : " << dataPosition.Fingers.Finger2 <<  endl;
-                cout << "  Finger 3   command: " << dataCommand.Fingers.Finger3 << "     Position : " << dataPosition.Fingers.Finger3 <<  endl;
-                cout << "*********************************" << endl << endl << endl;
-                */
             }
         }
 
         outfile.close();
 
-        cout << endl << "C L O S I N G   A P I" << endl;
+        cout << endl << "Closing API...!" << endl;
         result = (*MyCloseAPI)();
     }
 

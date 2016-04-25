@@ -8,7 +8,7 @@
  * input the file including trajectory information recorded using the recorder module in the repo
  *
  *
- * <<< SINCE THERE IS NO OBSTACLE AVOIDANCE MONITORING THE ROBOT USING THIS MODULE CAN BE DANGEREOUS >>>
+ * <<< SINCE THERE IS NO OBSTACLE AVOIDANCE MONITORING THE ROBOT, USING THIS MODULE CAN BE DANGEREOUS >>>
  *
  *
  *
@@ -250,10 +250,10 @@ int main()
                     trajectoryPoint.Limitations.forceParameter1 = 0.0f;
                     trajectoryPoint.Limitations.forceParameter2 = 0.0f;
                     trajectoryPoint.Limitations.forceParameter3 = 0.0f;
-                    trajectoryPoint.Limitations.speedParameter1 = 0.1f; // limit the translational velocity to 8cm/s
-                    trajectoryPoint.Limitations.speedParameter2 = 0.6f; // limit the rotational velocity to 6 RAD/s
-                    trajectoryPoint.Limitations.speedParameter3 = 0.1f; // limit the translational velocity to 8cm/s
-                    trajectoryPoint.LimitationsActive = 1;
+                    trajectoryPoint.Limitations.speedParameter1 = 0.2f; // limit the translational velocity to 8cm/s
+                    trajectoryPoint.Limitations.speedParameter2 = 0.9f; // limit the rotational velocity to 0.6 RAD/s
+                    trajectoryPoint.Limitations.speedParameter3 = 0.2f; // limit the translational velocity to 8cm/s
+                    trajectoryPoint.LimitationsActive = true;
                     trajectoryPoint.Position.Type = CARTESIAN_POSITION;
                     trajectoryPoint.Position.Actuators.Actuator1 = 0.0f;
                     trajectoryPoint.Position.Actuators.Actuator2 = 0.0f;
@@ -273,7 +273,11 @@ int main()
                         trajectoryPoint.Position.CartesianPosition.ThetaY = ty;
                         trajectoryPoint.Position.CartesianPosition.ThetaZ = tz;
                         (*MySendAdvanceTrajectory)(trajectoryPoint);
+                        cout << "--> " << trajectoryPoint.Position.CartesianPosition.X << "-" << trajectoryPoint.Position.CartesianPosition.Y << "-" << trajectoryPoint.Position.CartesianPosition.Z << "-"
+                                << trajectoryPoint.Position.CartesianPosition.ThetaX << "-" << trajectoryPoint.Position.CartesianPosition.ThetaY << "-"  << trajectoryPoint.Position.CartesianPosition.ThetaZ << endl;
+                        usleep(10000);
                     }
+                    cout << "\n\n Trajectory Executed Successfully!" << endl;
                     ifs.close();
                 }
                 else
