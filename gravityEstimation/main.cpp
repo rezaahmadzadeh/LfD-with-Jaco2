@@ -55,7 +55,9 @@ int main()
         MyGetCartesianForce = (int(*)(CartesianPosition &)) dlsym(commandLayer_handle, "GetCartesianForce");
         //Verify that all functions has been loaded correctly
         if ((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MyGetAngularCommand == NULL) ||
-                (MySwitchTrajectoryTorque == NULL))
+                (MySwitchTrajectoryTorque == NULL) || ( MyGetAngularPosition == NULL) || ( MyGetDevices == NULL) ||
+                ( MySetActiveDevice == NULL) || ( MyGetActuatorAcceleration == NULL)  || ( MyGetAngularVelocity == NULL) ||
+                ( MyRunGravityZEstimationSequence == NULL) || ( MySwitchTrajectoryTorque == NULL) || ( MySetTorqueSafetyFactor == NULL))
         {
                 cout << "* * *  E R R O R   D U R I N G   I N I T I A L I Z A T I O N  * * *" << endl;
                 programResult = 0;
