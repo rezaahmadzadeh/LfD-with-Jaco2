@@ -15,6 +15,7 @@ int main()
         cout << "code: Reza Ahmadzadeh (IRIM, 2016)." << endl;
         cout << "new parameters has to be set inside the code for safety reasons." << endl << endl;
 
+        bool setGravityVectorForPrentice;
         int result;
         int programResult = 0;
         int resultComm;
@@ -31,7 +32,7 @@ int main()
         int(*MySetGravityType)(GRAVITY_TYPE Type);
         int(*MyGetDevices)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &result);
         int(*MySetActiveDevice)(KinovaDevice device);
-
+        int(*MySetGravityVector)(float Command[3]);
         //int(*MyGetAngularPosition)(AngularPosition &);
         //int(*MyGetActuatorAcceleration)(AngularAcceleration &Response);
         //int(*MyGetAngularVelocity)(AngularPosition &Response);
@@ -54,6 +55,7 @@ int main()
         MySetGravityType = (int(*)(GRAVITY_TYPE Type)) dlsym(commandLayer_handle, "SetGravityType");
         MyGetDevices = (int(*)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &result)) dlsym(commandLayer_handle, "GetDevices");
         MySetActiveDevice = (int(*)(KinovaDevice devices)) dlsym(commandLayer_handle, "SetActiveDevice");
+        MySetGravityVector = (int(*)(float Command[3])) dlsym(commandLayer_handle, "SetGravityVector");
 
         // MyGetAngularPosition = (int(*)(AngularPosition &)) dlsym(commandLayer_handle, "GetAngularPosition");
         // MyGetActuatorAcceleration = (int(*)(AngularAcceleration &)) dlsym(commandLayer_handle, "GetActuatorAcceleration");
@@ -69,13 +71,14 @@ int main()
 
         //Verify that all functions has been loaded correctly
         if ((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MyGetAngularCommand == NULL) ||
-                (MySwitchTrajectoryTorque == NULL) || (MySetGravityOptimalZParam == NULL) || (MySetGravityType == NULL))
+                (MySwitchTrajectoryTorque == NULL) || (MySetGravityOptimalZParam == NULL) || (MySetGravityType == NULL) || (MySetGravityVector == NULL))
         {
                 cout << "* * *  ERROR: initialization failed!  * * *" << endl;
                 programResult = 0;
         }
         else
         {
+                setGravityVectorForPrentice = true;
                 cout << "Initialization completed." << endl << endl;
                 result = (*MyInitAPI)();
 
@@ -128,14 +131,31 @@ int main()
                         // 1- values for Nimbus
                         //float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.30469, -0.021818, 0.00503935, -1.36279, 0.00707375, 0.718922, 0.000474846, 0.249909, -0.00164482, -0.0102302, -0.0970402, -0.10606, 0.569738, -0.0528163, -0.00276341, 0.0694895};
                         // 2- values for Prentice
-                        float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.29878,  0.0454845,-0.0182455, -1.37306, 0.00480272, 0.719564, 0.00581768,  0.253633, 0.00242839, -0.00456613, 0.37502, -0.366981, 0.250789, 0.0856243,    -0.0030033,  0.0488819};
+                        //float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.29878,  0.0454845,-0.0182455, -1.37306, 0.00480272, 0.719564, 0.00581768,  0.253633, 0.00242839, -0.00456613, 0.37502, -0.366981, 0.250789, 0.0856243,    -0.0030033,  0.0488819};
                         // 3- older values (default)
                         // float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = { 1.22781, 0.0550204, -0.0148855, -1.15, -0.00524289, 0.563342, 0.0013925, 0.182611, -0.00396236, -0.00237999, 0.288417, -0.224536, 0.0526025, -0.0335503, 0.0246604, -0.00237218 };
+                        // 4- first gravity estimation for Prentice (5/5/2016)
+                        float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.30385,0.03884,-0.0177897,-1.37458,0.00733365,0.720785,0.00542076,0.254201,0.00159902,-0.00495904,0.370557,0.0191459,0.458593,0.0880957,-0.0664954,0.0377676};
 
                         MySetGravityOptimalZParam(OptimalParam);
                         MySetGravityType(OPTIMAL);  // Set gravity type to optimal
                         usleep(30000);
                         cout << "The parameters are set." << endl;
+
+                        if (setGravityVectorForPrentice)
+                        {
+                            // Gravity vector in -Y
+                            float GravityVector[3];
+                            GravityVector[0] = 0;// -9.81;
+                            GravityVector[1] = -9.81;// 0;
+                            GravityVector[2] = 0;// 0;
+                            // Set the gravity vector
+                            MySetGravityVector(GravityVector);
+                            cout << "The gravity vector was changed for Prentice configuration." << endl;
+                            // Wait
+                            usleep(20000);
+                        }
+
                         // ---------------------------------------------------------------------------------------------------------------------------
 
                         /*
