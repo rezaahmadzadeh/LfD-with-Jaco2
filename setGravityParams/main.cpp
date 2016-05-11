@@ -78,7 +78,7 @@ int main()
         }
         else
         {
-                setGravityVectorForPrentice = true;
+                setGravityVectorForPrentice = false;
                 cout << "Initialization completed." << endl << endl;
                 result = (*MyInitAPI)();
 
@@ -141,7 +141,9 @@ int main()
                         // 6- Martine gravity estimation for Prentice (5/5/2016)
                         // float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.18315,-0.00455447,-0.0090834,-1.11046,-0.000249209,0.554853,-0.000344073,0.181086,-0.00264444,-0.00278941,0.179827,-0.164505,0.0341622,-0.0273777,-0.0568545,-0.00272235};
                         // 7- after a good calibration (5/6/2016)
-                        float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = { 1.2866,0.0493694,-0.026624,-1.36103,0.0107946,0.715808,0.00667519,0.251691,0.00104736,-0.00474472,0.4016,-0.436709,0.486683,0.0481139,-0.120568,0.00334937};
+                        // float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = { 1.2866,0.0493694,-0.026624,-1.36103,0.0107946,0.715808,0.00667519,0.251691,0.00104736,-0.00474472,0.4016,-0.436709,0.486683,0.0481139,-0.120568,0.00334937};
+                        // 8- after short-cirsuit
+                        float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.28652,0.0430668,-0.0174641,-1.35257,0.00558113,0.705339,0.00475949,0.250731,0.00151768,-0.00571242,0.364516,-0.12309,0.423939,-0.0476983,-0.0529807,0.0819299};
 
                         MySetGravityOptimalZParam(OptimalParam);
                         MySetGravityType(OPTIMAL);  // Set gravity type to optimal
