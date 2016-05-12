@@ -147,7 +147,8 @@ int main()
                         float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.28761,0.041719,-0.0122856,-1.35148,0.0103189,0.707362,0.00734889,0.247521,0.000899133,-0.00504736,0.319657,-0.229033,0.414252,-0.0468793,-0.0562333,0.11089};
 
                         MySetGravityOptimalZParam(OptimalParam);
-                        MySetGravityType(OPTIMAL);  // Set gravity type to optimal
+                        //MySetGravityType(OPTIMAL);  // Set gravity type to optimal
+                        MySetGravityType(MANUAL_INPUT);  // Set gravity type to optimal
                         usleep(30000);
                         cout << "The parameters are set." << endl;
 
