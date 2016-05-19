@@ -78,7 +78,7 @@ int main()
         }
         else
         {
-                setGravityVectorForPrentice = false;
+                setGravityVectorForPrentice = true;
                 cout << "Initialization completed." << endl << endl;
                 result = (*MyInitAPI)();
 
@@ -147,12 +147,12 @@ int main()
                         //float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.28761,0.041719,-0.0122856,-1.35148,0.0103189,0.707362,0.00734889,0.247521,0.000899133,-0.00504736,0.319657,-0.229033,0.414252,-0.0468793,-0.0562333,0.11089};
                         // 9- May/17 before downgrading (still version 5.5.0.1)
                         // float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {0.993305,0.167201,-0.0392667,-0.863101,-0.0145881,0.402969,-0.0426991,0.119299,-0.0581788,-0.0461337,-0.0190188,-1.01005,0.661418,-0.238155,-0.204388,0.103521};
-                        // 10- May/17 after downgrading to version 5.2.6
+                        // 10- May/17 after downgrading to version 5.2.6 (confirmed working for Prentice with MANUAL_INPUT and gravity -Y)
                         float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.28918,0.0347908,-0.0154517,-1.35362,0.0101152,0.70953,0.00549873,0.248816,0.00093607,-0.006179,0.104154,-0.0309546,0.368999,-0.0607794,-0.0695369,0.046388};
 
                         MySetGravityOptimalZParam(OptimalParam);
-                        MySetGravityType(OPTIMAL);  // Set gravity type to optimal
-                        //MySetGravityType(MANUAL_INPUT);  // Set gravity type to optimal
+                        //MySetGravityType(OPTIMAL);  // Set gravity type to optimal
+                        MySetGravityType(MANUAL_INPUT);  // Set gravity type to optimal
                         usleep(30000);
                         cout << "The parameters are set." << endl;
 
