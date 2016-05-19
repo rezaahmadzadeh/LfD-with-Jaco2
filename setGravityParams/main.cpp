@@ -13,7 +13,9 @@ int main()
         cout << "=====  Set Gravity Parameters for Jaco2 arm   =====" << endl;
         cout << "===================================================" << endl;
         cout << "code: Reza Ahmadzadeh (IRIM, 2016)." << endl;
-        cout << "new parameters has to be set inside the code for safety reasons." << endl << endl;
+        cout << "Note that parameters are unique to the robots on which" << endl;
+        cout << "the estimation process was performed." << endl;
+        cout << "New parameters has to be set inside the code for safety reasons." << endl << endl;
 
         bool setGravityVectorForPrentice;
         int result;
@@ -34,6 +36,8 @@ int main()
         int(*MySetActiveDevice)(KinovaDevice device);
         int(*MySetGravityVector)(float Command[3]);
         int(*MySetGravityPayload)(float Command[GRAVITY_PAYLOAD_SIZE]);
+        int(*MyGetAngularForceGravityFree)(AngularPosition &);
+        int(*MyGetCartesianForce)(CartesianPosition &);
         //int(*MyGetAngularPosition)(AngularPosition &);
         //int(*MyGetActuatorAcceleration)(AngularAcceleration &Response);
         //int(*MyGetAngularVelocity)(AngularPosition &Response);
@@ -43,8 +47,6 @@ int main()
         //int(*MySendCartesianForceCommand)(float Command[COMMAND_SIZE]);
         //int(*MySetGravityVector)(float Command[3]);
         //int(*MySetGravityPayload)(float Command[GRAVITY_PAYLOAD_SIZE]);
-        int(*MyGetAngularForceGravityFree)(AngularPosition &);
-        int(*MyGetCartesianForce)(CartesianPosition &);
 
         //We load the library (Under Windows, use the function LoadLibrary)
         commandLayer_handle = dlopen("Kinova.API.USBCommandLayerUbuntu.so",RTLD_NOW|RTLD_GLOBAL);
@@ -58,7 +60,8 @@ int main()
         MySetActiveDevice = (int(*)(KinovaDevice devices)) dlsym(commandLayer_handle, "SetActiveDevice");
         MySetGravityVector = (int(*)(float Command[3])) dlsym(commandLayer_handle, "SetGravityVector");
         MySetGravityPayload = (int(*)(float Command[GRAVITY_PAYLOAD_SIZE])) dlsym(commandLayer_handle, "SetGravityPayload");
-
+        MyGetAngularForceGravityFree = (int(*)(AngularPosition &)) dlsym(commandLayer_handle, "GetAngularForceGravityFree");
+        MyGetCartesianForce = (int(*)(CartesianPosition &)) dlsym(commandLayer_handle, "GetCartesianForce");
         // MyGetAngularPosition = (int(*)(AngularPosition &)) dlsym(commandLayer_handle, "GetAngularPosition");
         // MyGetActuatorAcceleration = (int(*)(AngularAcceleration &)) dlsym(commandLayer_handle, "GetActuatorAcceleration");
         // MyGetAngularVelocity = (int(*)(AngularPosition &)) dlsym(commandLayer_handle, "GetAngularVelocity");
@@ -68,12 +71,11 @@ int main()
         // MySendCartesianForceCommand = (int(*)(float Command[COMMAND_SIZE])) dlsym(commandLayer_handle, "SendCartesianForceCommand");
         // MySetGravityVector = (int(*)(float Command[3])) dlsym(commandLayer_handle, "SetGravityVector");
         // MySetGravityPayload = (int(*)(float Command[GRAVITY_PAYLOAD_SIZE])) dlsym(commandLayer_handle, "SetGravityPayload");
-        MyGetAngularForceGravityFree = (int(*)(AngularPosition &)) dlsym(commandLayer_handle, "GetAngularForceGravityFree");
-        MyGetCartesianForce = (int(*)(CartesianPosition &)) dlsym(commandLayer_handle, "GetCartesianForce");
 
         //Verify that all functions has been loaded correctly
         if ((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MyGetAngularCommand == NULL) ||
-                (MySwitchTrajectoryTorque == NULL) || (MySetGravityOptimalZParam == NULL) || (MySetGravityType == NULL) || (MySetGravityVector == NULL) || (MySetGravityPayload == NULL))
+                (MySwitchTrajectoryTorque == NULL) || (MySetGravityOptimalZParam == NULL) ||
+                (MySetGravityType == NULL) || (MySetGravityVector == NULL) || (MySetGravityPayload == NULL))
         {
                 cout << "***  ERROR: initialization failed!  ***" << endl;
                 programResult = 0;
