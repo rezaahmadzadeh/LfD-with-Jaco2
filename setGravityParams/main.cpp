@@ -33,6 +33,7 @@ int main()
         int(*MyGetDevices)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &result);
         int(*MySetActiveDevice)(KinovaDevice device);
         int(*MySetGravityVector)(float Command[3]);
+        int(*MySetGravityPayload)(float Command[GRAVITY_PAYLOAD_SIZE]);
         //int(*MyGetAngularPosition)(AngularPosition &);
         //int(*MyGetActuatorAcceleration)(AngularAcceleration &Response);
         //int(*MyGetAngularVelocity)(AngularPosition &Response);
@@ -56,6 +57,7 @@ int main()
         MyGetDevices = (int(*)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &result)) dlsym(commandLayer_handle, "GetDevices");
         MySetActiveDevice = (int(*)(KinovaDevice devices)) dlsym(commandLayer_handle, "SetActiveDevice");
         MySetGravityVector = (int(*)(float Command[3])) dlsym(commandLayer_handle, "SetGravityVector");
+        MySetGravityPayload = (int(*)(float Command[GRAVITY_PAYLOAD_SIZE])) dlsym(commandLayer_handle, "SetGravityPayload");
 
         // MyGetAngularPosition = (int(*)(AngularPosition &)) dlsym(commandLayer_handle, "GetAngularPosition");
         // MyGetActuatorAcceleration = (int(*)(AngularAcceleration &)) dlsym(commandLayer_handle, "GetActuatorAcceleration");
@@ -71,9 +73,9 @@ int main()
 
         //Verify that all functions has been loaded correctly
         if ((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MyGetAngularCommand == NULL) ||
-                (MySwitchTrajectoryTorque == NULL) || (MySetGravityOptimalZParam == NULL) || (MySetGravityType == NULL) || (MySetGravityVector == NULL))
+                (MySwitchTrajectoryTorque == NULL) || (MySetGravityOptimalZParam == NULL) || (MySetGravityType == NULL) || (MySetGravityVector == NULL) || (MySetGravityPayload == NULL))
         {
-                cout << "* * *  ERROR: initialization failed!  * * *" << endl;
+                cout << "***  ERROR: initialization failed!  ***" << endl;
                 programResult = 0;
         }
         else
@@ -167,6 +169,18 @@ int main()
                             MySetGravityVector(GravityVector);
                             cout << "The gravity vector was changed for Prentice configuration." << endl;
                             usleep(20000);
+
+                            // Gravity payload initialization (1.8 kg for the normal hand 0.85 for Robotiq hand)
+                            float GravityPayload[4];
+                            GravityPayload[0] = 0.85;
+                            GravityPayload[1] = 0;
+                            GravityPayload[2] = 0;
+                            GravityPayload[3] = 0;
+                            // Set payload params
+                            MySetGravityPayload(GravityPayload);
+                            cout << "The gravity payload was set for Robotiq gripper." << endl;
+                            usleep(20000);
+
                         }
 
                         // ---------------------------------------------------------------------------------------------------------------------------
