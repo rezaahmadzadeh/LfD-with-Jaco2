@@ -43,8 +43,8 @@ int main()
         //int(*MySendCartesianForceCommand)(float Command[COMMAND_SIZE]);
         //int(*MySetGravityVector)(float Command[3]);
         //int(*MySetGravityPayload)(float Command[GRAVITY_PAYLOAD_SIZE]);
-        //int(*MyGetAngularForceGravityFree)(AngularPosition &);
-        //int(*MyGetCartesianForce)(CartesianPosition &);
+        int(*MyGetAngularForceGravityFree)(AngularPosition &);
+        int(*MyGetCartesianForce)(CartesianPosition &);
 
         //We load the library (Under Windows, use the function LoadLibrary)
         commandLayer_handle = dlopen("Kinova.API.USBCommandLayerUbuntu.so",RTLD_NOW|RTLD_GLOBAL);
@@ -68,8 +68,8 @@ int main()
         // MySendCartesianForceCommand = (int(*)(float Command[COMMAND_SIZE])) dlsym(commandLayer_handle, "SendCartesianForceCommand");
         // MySetGravityVector = (int(*)(float Command[3])) dlsym(commandLayer_handle, "SetGravityVector");
         // MySetGravityPayload = (int(*)(float Command[GRAVITY_PAYLOAD_SIZE])) dlsym(commandLayer_handle, "SetGravityPayload");
-        // MyGetAngularForceGravityFree = (int(*)(AngularPosition &)) dlsym(commandLayer_handle, "GetAngularForceGravityFree");
-        // MyGetCartesianForce = (int(*)(CartesianPosition &)) dlsym(commandLayer_handle, "GetCartesianForce");
+        MyGetAngularForceGravityFree = (int(*)(AngularPosition &)) dlsym(commandLayer_handle, "GetAngularForceGravityFree");
+        MyGetCartesianForce = (int(*)(CartesianPosition &)) dlsym(commandLayer_handle, "GetCartesianForce");
 
         //Verify that all functions has been loaded correctly
         if ((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MyGetAngularCommand == NULL) ||
@@ -167,7 +167,7 @@ int main()
                             GravityVector[2] = 0;// 0;
                             // Set the gravity vector
                             MySetGravityVector(GravityVector);
-                            cout << "The gravity vector was changed for Prentice configuration." << endl;
+                            cout << "The gravity vector was changed for Prentice configuration to [" << GravityVector[0] << "," << GravityVector[1] << "," << GravityVector[2] << "]." << endl;
                             usleep(20000);
 
                             // Gravity payload initialization (1.8 kg for the normal hand 0.85 for Robotiq hand)
@@ -185,8 +185,10 @@ int main()
 
                         // ---------------------------------------------------------------------------------------------------------------------------
 
-                        /*
+
                         // Get and print the Torques and Forces (with gravity removed)
+                        AngularPosition TorqueFree;
+                        CartesianPosition CartForce;
                         MyGetAngularForceGravityFree(TorqueFree);
                         MyGetCartesianForce(CartForce);
                         cout << "*********************************" << endl;
@@ -196,8 +198,9 @@ int main()
                         cout << "Actuator 3   Torque : " << TorqueFree.Actuators.Actuator3 << "°" << "     Force Z : " << CartForce.Coordinates.Z << endl;
                         cout << "Actuator 4   Torque : " << TorqueFree.Actuators.Actuator4 << "°" << "     Torque X : " << CartForce.Coordinates.ThetaX << endl;
                         cout << "Actuator 5   Torque : " << TorqueFree.Actuators.Actuator5 << "°" << "     Torque Y : " << CartForce.Coordinates.ThetaY << endl;
-                        cout << "Actuator 6   Torque : " << TorqueFree.Actuators.Actuator6 << "°" << "     Torque Z : " << CartForce.Coordinates.ThetaZ << endl << endl;
-                        */
+                        cout << "Actuator 6   Torque : " << TorqueFree.Actuators.Actuator6 << "°" << "     Torque Z : " << CartForce.Coordinates.ThetaZ << endl;
+                        cout << "*********************************" << endl << endl;
+
                 }
                 else
                 {
