@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
     int (*MyGetCartesianPosition)(CartesianPosition &);
     int (*MyGetDevices)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &result);
     int (*MySetActiveDevice)(KinovaDevice device);
+    int (*MySendBasicTrajectory)(TrajectoryPoint command);
 
     //We load the library
     commandLayer_handle = dlopen("Kinova.API.USBCommandLayerUbuntu.so",RTLD_NOW|RTLD_GLOBAL);
@@ -90,6 +91,7 @@ int main(int argc, char *argv[])
     MyGetCartesianPosition = (int (*) (CartesianPosition &)) dlsym(commandLayer_handle,"GetCartesianPosition");
     MyGetDevices = (int (*)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &result)) dlsym(commandLayer_handle,"GetDevices");
     MySetActiveDevice = (int (*)(KinovaDevice devices)) dlsym(commandLayer_handle,"SetActiveDevice");
+    MySendBasicTrajectory = (int (*)(TrajectoryPoint)) dlsym(commandLayer_handle,"SendBasicTrajectory");
 
     //If the was loaded correctly
     if((MyInitAPI == NULL) || (MyCloseAPI == NULL) || (MyGetCartesianPosition == NULL) || (MyGetAngularPosition == NULL)
@@ -127,6 +129,46 @@ int main(int argc, char *argv[])
             //Setting the current device as the active device.
             MySetActiveDevice(list[i]);
 
+
+            std::string answer;
+            std::string yes = "y"; //.c_str();
+
+            TrajectoryPoint trajectoryPoint;
+            cout << "The robot will move to HOME position first. Agree?";
+            getline(cin, answer);
+            if (answer.compare(yes) == 0 )
+            {
+                trajectoryPoint.InitStruct();
+                trajectoryPoint.Position.Type = ANGULAR_POSITION;
+                trajectoryPoint.Position.Actuators.Actuator1 = 270;
+                trajectoryPoint.Position.Actuators.Actuator2 = 180;
+                trajectoryPoint.Position.Actuators.Actuator3 = 90;
+                trajectoryPoint.Position.Actuators.Actuator4 = 0;
+                trajectoryPoint.Position.Actuators.Actuator5 = 90;
+                trajectoryPoint.Position.Actuators.Actuator6 = 45;
+                (*MySendBasicTrajectory)(trajectoryPoint);
+                usleep(3000);
+            }
+            else
+            {
+                result = (*MyCloseAPI)();
+                return 0;
+            }
+
+
+            cout << "start recording(y)?";
+            getline(cin, answer);
+            if (answer.compare(yes)!=0)
+            {
+                result = (*MyCloseAPI)();
+                return 0;
+
+            }
+
+
+
+
+
             int pointCounter = 0;
             while(!kbhit())
             {
@@ -143,6 +185,27 @@ int main(int argc, char *argv[])
                      << cartPosition.Coordinates.X << "  " << cartPosition.Coordinates.Y << "  " << cartPosition.Coordinates.Z << "  "
                      << cartPosition.Coordinates.ThetaX << "  " << cartPosition.Coordinates.ThetaY << "  " << cartPosition.Coordinates.ThetaZ << endl;
                 pointCounter++;
+            }
+
+            cout << "The robot will move to HOME position first. Agree?";
+            getline(cin, answer);
+            if (answer.compare(yes) == 0 )
+            {
+                trajectoryPoint.InitStruct();
+                trajectoryPoint.Position.Type = ANGULAR_POSITION;
+                trajectoryPoint.Position.Actuators.Actuator1 = 270;
+                trajectoryPoint.Position.Actuators.Actuator2 = 180;
+                trajectoryPoint.Position.Actuators.Actuator3 = 90;
+                trajectoryPoint.Position.Actuators.Actuator4 = 0;
+                trajectoryPoint.Position.Actuators.Actuator5 = 90;
+                trajectoryPoint.Position.Actuators.Actuator6 = 45;
+                (*MySendBasicTrajectory)(trajectoryPoint);
+                usleep(3000);
+            }
+            else
+            {
+                result = (*MyCloseAPI)();
+                return 0;
             }
         }
 
