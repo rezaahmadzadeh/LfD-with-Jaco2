@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
             //Setting the current device as the active device.
             MySetActiveDevice(list[i]);
 
-            MyMoveHome();  // move the robot home
+            //MyMoveHome();  // move the robot home
 
             std::string answer;
             std::string yes = "y"; //.c_str();
@@ -138,12 +138,12 @@ int main(int argc, char *argv[])
             {
                 trajectoryPoint.InitStruct();
                 trajectoryPoint.Position.Type = ANGULAR_POSITION;
-                trajectoryPoint.Position.Actuators.Actuator1 = 227.4;
-                trajectoryPoint.Position.Actuators.Actuator2 = 198.89;
-                trajectoryPoint.Position.Actuators.Actuator3 = 140.07;
-                trajectoryPoint.Position.Actuators.Actuator4 = -72.08;
-                trajectoryPoint.Position.Actuators.Actuator5 = 37.43;
-                trajectoryPoint.Position.Actuators.Actuator6 = 43.52;
+                trajectoryPoint.Position.Actuators.Actuator1 = 180; //227.4;
+                trajectoryPoint.Position.Actuators.Actuator2 = 180; //198.89;
+                trajectoryPoint.Position.Actuators.Actuator3 = 90; //140.07;
+                trajectoryPoint.Position.Actuators.Actuator4 = 90; //-72.08;
+                trajectoryPoint.Position.Actuators.Actuator5 = 0; //37.43;
+                trajectoryPoint.Position.Actuators.Actuator6 = 0; //43.52;
                 (*MySendBasicTrajectory)(trajectoryPoint);
                 usleep(3000000);
                 cout << "Home now!" << endl;

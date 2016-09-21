@@ -82,7 +82,7 @@ int main()
         }
         else
         {
-                setGravityVectorForPrentice = true;
+                setGravityVectorForPrentice = false;                         //####################### CHECK ####################################
                 cout << "Initialization completed." << endl << endl;
                 result = (*MyInitAPI)();
 
@@ -152,11 +152,18 @@ int main()
                         // 9- May/17 before downgrading (still version 5.5.0.1)
                         // float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {0.993305,0.167201,-0.0392667,-0.863101,-0.0145881,0.402969,-0.0426991,0.119299,-0.0581788,-0.0461337,-0.0190188,-1.01005,0.661418,-0.238155,-0.204388,0.103521};
                         // 10- May/17 after downgrading to version 5.2.6 (confirmed working for Prentice with MANUAL_INPUT and gravity -Y)
-                        float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.28918,0.0347908,-0.0154517,-1.35362,0.0101152,0.70953,0.00549873,0.248816,0.00093607,-0.006179,0.104154,-0.0309546,0.368999,-0.0607794,-0.0695369,0.046388};
+                        //float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.28918,0.0347908,-0.0154517,-1.35362,0.0101152,0.70953,0.00549873,0.248816,0.00093607,-0.006179,0.104154,-0.0309546,0.368999,-0.0607794,-0.0695369,0.046388};
+                        //11- August 15 verical - Prentice
+                        //float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.30789, 0.0234619, -0.0107989, -1.35571, 0.00891185, 0.711716, 0.00668178, 0.248828, -0.000318056, -0.00550897, 0.163029, -0.791297, 0.362683, -0.0393285, -0.0226321, -0.0176477};
+                        // 12- Sept 9 2016
+                        //float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.31185,0.030557,-0.0116892,-1.36054,0.00800007,0.711626,0.00664062,0.248348,0.00104195,-0.00575232,0.284988,0.0613007,0.245406,0.0533555,-0.0512169,-0.00854255};
+                        //float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {0.956095,0.192638,-0.0331071,-0.89395,-0.0259693,0.427831,-0.0520528,0.147127,-0.0845392,-0.0421207,-0.00367624,-1.18732,0.728361,-0.150335,-0.300516,0.0955767};
+                        // 13- Sept 7 2016
+                        float OptimalParam[OPTIMAL_Z_PARAM_SIZE] = {1.31011,0.0311761,-0.011198,-1.35773,0.00976884,0.710675,0.00755337,0.247009,0.00066524,-0.00634159,-0.134054,0.0219935,0.271503,0.0447736,-0.0639545,-0.00111969};
 
                         MySetGravityOptimalZParam(OptimalParam);
-                        //MySetGravityType(OPTIMAL);  // Set gravity type to optimal
-                        MySetGravityType(MANUAL_INPUT);  // Set gravity type to optimal
+                        MySetGravityType(OPTIMAL);  // Set gravity type to optimal              //####################### CHECK ####################################
+                        // MySetGravityType(MANUAL_INPUT);  // Set gravity type to optimal
                         usleep(30000);
                         cout << "The parameters are set." << endl;
 
@@ -164,7 +171,7 @@ int main()
                         {
                             // Gravity vector in -Y
                             float GravityVector[3];
-                            GravityVector[0] = 0;// -9.81;
+                            GravityVector[0] = 0;// -9.81;  //####################### CHECK ####################################
                             GravityVector[1] = -9.81;// 0;
                             GravityVector[2] = 0;// 0;
                             // Set the gravity vector
@@ -174,7 +181,7 @@ int main()
 
                             // Gravity payload initialization (1.8 kg for the normal hand 0.85 for Robotiq hand)
                             float GravityPayload[4];
-                            GravityPayload[0] = 0.85;
+                            GravityPayload[0] = 0.85;   //####################### CHECK ####################################
                             GravityPayload[1] = 0;
                             GravityPayload[2] = 0;
                             GravityPayload[3] = 0;
@@ -184,6 +191,7 @@ int main()
                             usleep(20000);
 
                         }
+
 
                         // ---------------------------------------------------------------------------------------------------------------------------
 

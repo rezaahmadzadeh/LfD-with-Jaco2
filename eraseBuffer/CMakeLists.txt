@@ -1,0 +1,5 @@
+project(erasebuffer)
+cmake_minimum_required(VERSION 2.8)
+include_directories(/opt/kinova/API)
+add_executable(${PROJECT_NAME} main.cpp)
+target_link_libraries(${PROJECT_NAME} /usr/lib/x86_64-linux-gnu/libdl.so)
